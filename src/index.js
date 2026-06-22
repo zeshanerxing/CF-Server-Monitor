@@ -128,8 +128,7 @@ async function fetchHistoryData(env, request, id, hours, columns, sys = null) {
 
 export default {
   async fetch(request, env, ctx) {
-    const isLocalhost = new URL(request.url).hostname === 'localhost';
-    setDebug(env.DEBUG || (isLocalhost ? 1 : 0));
+    setDebug(env.DEBUG);
 
     const url = new URL(request.url);
     const method = request.method;
@@ -288,22 +287,46 @@ export default {
     const cron = event.cron;
     console.debug(`[Cron] 定时任务触发: ${cron}`);
     
-    if (cron === '* * 1 * *') {
-      console.debug('[Cron] 开始执行每月数据清理任务（表轮换）');
-      await monthlyCleanup(env.DB);
-      console.debug('[Cron] 每月数据清理任务完成');
-    } else if (cron === '* * 8 * *') {
-      console.debug('[Cron] 开始执行每月8号清理旧表任务');
-      await dropMetricsHistoryOld(env.DB);
-      console.debug('[Cron] 每月8号清理旧表任务完成');
-    } else if (cron === '*/1 * * * *') {
+    if (cron === '*/1 * * * *') {
       console.debug('[Cron] 开始执行离线节点检测');
       await checkOfflineNodes(env.DB);
       console.debug('[Cron] 离线节点检测完成');
-    } else if (cron === '0 12 * * *') {
-      console.debug('[Cron] 开始执行服务器到期检测');
-      await checkExpiringServers(env.DB);
-      console.debug('[Cron] 服务器到期检测完成');
+    } else if (cron === '0 * * * *') {
+      const now = new Date();
+      const day = now.getUTCDate();
+      const hour = now.getUTCHours();
+      
+      if (day === 1 && hour === 0) {
+        console.debug('[Cron] 开始执行每月数据清理任务（表轮换）');
+        await monthlyCleanup(env.DB);
+        console.debug('[Cron] 每月数据清理任务完成');
+      }
+      
+      if (day === 8 && hour === 0) {
+        console.debug('[Cron] 开始执行每月8号清理旧表任务');
+        await dropMetricsHistoryOld(env.DB);
+        console.debug('[Cron] 每月8号清理旧表任务完成');
+      }
+      
+      if (hour === 12) {
+        console.debug('[Cron] 开始执行服务器到期检测');
+        await checkExpiringServers(env.DB);
+        console.debug('[Cron] 服务器到期检测完成');
+      }
+    }else if(env.DEBUG == 1){
+      if (cron === '* * 1 * *') {
+        console.debug('[Cron DEBUG] 开始执行每月数据清理任务（表轮换）');
+        await monthlyCleanup(env.DB);
+        console.debug('[Cron DEBUG] 每月数据清理任务完成');
+      } else if (cron === '* * 8 * *') {
+        console.debug('[Cron DEBUG] 开始执行每月8号清理旧表任务');
+        await dropMetricsHistoryOld(env.DB);
+        console.debug('[Cron DEBUG] 每月8号清理旧表任务完成');
+      } else if (cron === '0 12 * * *') {
+        console.debug('[Cron DEBUG] 开始执行服务器到期检测');
+        await checkExpiringServers(env.DB);
+        console.debug('[Cron DEBUG] 服务器到期检测完成');
+      }
     }
   }
 };

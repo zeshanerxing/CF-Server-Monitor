@@ -152,6 +152,7 @@ let isDebugEnabled = false;
 
 export function setDebug(debug) {
   isDebugEnabled = debug === 1 || debug === '1' || debug === true;
+  if(isDebugEnabled) console.log('DEBUG模式:', isDebugEnabled);
 }
 
 export function debug(...args) {

@@ -2,7 +2,7 @@
 
 一个基于 Cloudflare Workers + D1 + Durable Objects 的多服务器监控探针系统，支持实时监控、历史数据查看、延迟追踪、地图展示等功能。兼容主流Linux系统，Alpine Linux，OpenWrt，Windows系统。**演示地址**：<https://tz.dashdeep.dpdns.org/>
 
-**当前版本：V2.7.3.2**
+**当前版本：V2.7.3.3**
 
 <2.7.1 新增了功能，需要**升级安装脚本** & **后台升级数据库** 才能生效，否则会产生数据库结构错误或者图表显示异常
 ```
@@ -28,6 +28,7 @@ cat /etc/config/cf-probe/config.conf
 <details>
 <summary>更新记录</summary>
 
+- V2.7.3.3 压缩定时任务4个为2个，避免超出免费额度
 - V2.7.3.2 合并通知告警，其他代码逻辑优化
 - V2.7.3.1 当request.cf返回`cf object not available`错误，导致国家/地区代码获取失败，使用request.headers获取作为备选
 - V2.7.3 新增服务器到期提醒功能，调整后台设置页面布局
@@ -504,10 +505,8 @@ Windows 系统
 
 | 任务   | 触发时间          | 说明                                    |
 | ---- | ------------- | ------------------------------------- |
-| 数据轮换 | `* * 1 * *`   | 每月1号UTC 00:00 执行表轮换（删除旧表，重命名当前表，创建新表） |
-| 数据清理 | `* * 8 * *`   | 每月8号UTC 08:00 删除旧表                    |
 | 离线检测 | `*/1 * * * *` | 每分钟检测离线节点并发送告警 |
-| 服务器到期提醒 | `0 12 0 * *` | 每天UTC 12:00 检查服务器到期状态并发送提醒 |
+| 合并任务 | `0 * * * *`   | 每小时执行，根据日期判断执行：每月1号数据轮换、每月8号清理旧表、每天12:00服务器到期检测 |
 
 </details>
 
@@ -687,10 +686,11 @@ npm run deploy
 定时任务
 
 ```
-http://localhost:8787/cdn-cgi/handler/scheduled?cron=*+*+1+*+* // 每月一号执行一次
-http://localhost:8787/cdn-cgi/handler/scheduled?cron=*+*+8+*+* // 每月8号执行一次
-http://localhost:8787/cdn-cgi/handler/scheduled?cron=*/1+*+*+*+* // 每分钟执行一次
-http://localhost:8787/cdn-cgi/handler/scheduled?cron=0+12+*+*+* // 每天12点执行一次
+http://localhost:8787/cdn-cgi/handler/scheduled?cron=*/1+*+*+*+* // 每分钟执行一次（离线检测）
+http://localhost:8787/cdn-cgi/handler/scheduled?cron=0+*+*+*+* // 每小时执行一次（合并任务）
+http://localhost:8787/cdn-cgi/handler/scheduled?cron=*+*+1+*+* // 每月一号执行一次（测试使用）
+http://localhost:8787/cdn-cgi/handler/scheduled?cron=*+*+8+*+* // 每月8号执行一次（测试使用）
+http://localhost:8787/cdn-cgi/handler/scheduled?cron=0+12+*+*+* // 每天12点执行一次（测试使用）
 ```
 
 ### 本地测试数据
