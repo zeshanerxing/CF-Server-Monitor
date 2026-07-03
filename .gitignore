@@ -5,6 +5,7 @@ public/cf_probe_config.json
 public/cf_probe_traffic.dat
 public/__pycache__/
 theme/
+public/config.json
 
 # 依赖
 node_modules/
