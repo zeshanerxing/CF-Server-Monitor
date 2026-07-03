@@ -28,7 +28,7 @@ const setApiBases = (values) => {
 export const initConfig = async () => {
   setApiBases([window.location.origin])
   try {
-    const res = await fetch(`/config.json?t=${Date.now()}`, {
+    const res = await fetch(`./config.json?t=${Date.now()}`, {
       cache: 'no-cache',
       credentials: 'omit'
     })

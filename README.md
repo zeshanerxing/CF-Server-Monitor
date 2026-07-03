@@ -26,6 +26,7 @@ cat /etc/config/cf-probe/config.conf
 
 <details>
 <summary>更新记录</summary>
+
 - V2.7.6 添加多站点支持包括验证码登录等，添加Windows PowerShell无依赖安装脚本，一些安全优化
 - V2.7.5 DO WebSocket改成 DO WebSocket Hibernation基本剔除DO Duration消耗，新增批量推送入口，每5秒批量接收多个服务器更新，减少 DO 请求次数。
 - V2.7.4 添加允许跨域配置，为后续版本额外功能做铺垫，前端加上跨域配置，修改成HASH模式，修改country为region，数据库自动维护
@@ -35,7 +36,6 @@ cat /etc/config/cf-probe/config.conf
 - V2.7.3 新增服务器到期提醒功能，调整后台设置页面布局
 - V2.7.2 新增支持多分区磁盘统计功能以及其他优化，增加[图文教程](https://huilang.me/cf-server-monitor-setup/)
 - V2.7.1 新增国内四线路丢包率监控与历史图表，新增GPU字段与图表展示（GPU暂未测试），后台新增 Cloudflare D1/Workers 每日额度查询功能；
-
 - V2.7.0 将每日数据清理改为每月1号执行的表轮换任务, 删除旧表将不再扣除D1消耗,前端图表支持查看最长7天的历史数据,优化脚本一键升级功能
 - V2.6.10 修复了方式一部署方式，同步后丢失API\_SECRET的问题
 - V2.6.9 修复地图显示问题，重构OpenWrt安装脚本，新增OpenRC服务支持
@@ -55,7 +55,7 @@ cat /etc/config/cf-probe/config.conf
 - 📊 **实时监控**：CPU、GPU、内存、磁盘、网络、进程数、连接数、负载均衡
 - 📈 **历史图表**：支持7天历史数据查看
 - 🌍 **全球地图**：可视化展示服务器分布
-- 🔔 **离线告警**：支持 Telegram 和企业微信通知
+- 🔔 **离线告警**：支持 Telegram、企业微信 / 飞书 通知
 - 📱 **响应式**：支持桌面端和移动端
 - 🔄 **自动部署**：GitHub Actions 一键部署
 - 🗺️ **网络质量追踪**：国内电信/联通/移动/字节延迟与丢包率监测
@@ -511,10 +511,10 @@ Windows 系统（Python 版）
 
 1. 创建 Telegram Bot（通过 [@BotFather](https://t.me/BotFather)）
 2. 获取 Bot Token
-3. 获取 Chat ID（通过 [@userinfobot](https://t.me/userinfobot)）
+3. 获取 Chat ID（通过 [@idbot](https://t.me/idbot)）
 4. 填入后台设置并开启
 
-**企业微信告警：**
+**企业微信 / 飞书 告警：**
 
 1. 创建群机器人，获取 Webhook URL
 2. 填入 Bot Token 字段
@@ -779,13 +779,17 @@ node test/api-check.js --help
 
 MIT License
 
-## 🙏 致谢
+## � 社区
 
-- [CF-Server-Monitor-Pro](https://github.com/a63414262/CF-Server-Monitor-Pro) 最初借鉴该项目，进行深度二次开发
+- [Telegram 群组](https://t.me/cfServerMonitor)
+
+## �🙏 致谢
+
+- [CF-Server-Monitor-Pro](https://github.com/a63414262/CF-Server-Monitor-Pro)
 - [Cloudflare Workers](https://workers.cloudflare.com/)
 - [Vue 3](https://vuejs.org/)
 - [Vite](https://vitejs.dev/)
 - [Chart.js](https://www.chartjs.org/)
 - [Leaflet](https://leafletjs.com/)
-- 感谢 [LINUX DO](https://linux.do/) 社区的支持与推广
+- 感谢 [LINUX DO](https://linux.do/) [NodeSeek](https://www.nodeseek.com/post-763025-1) 社区的支持与推广
 
